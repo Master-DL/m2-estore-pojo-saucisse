@@ -1,4 +1,6 @@
-package core;
+package data;
+
+import service.Client;
 
 import java.util.HashMap;
 import java.util.Map;
