@@ -8,12 +8,13 @@ import java.util.Set;
 import data.Cart;
 import data.ItemInStock;
 import data.Order;
-import estorePojo.exceptions.InsufficientBalanceException;
-import estorePojo.exceptions.InvalidCartException;
-import estorePojo.exceptions.UnknownAccountException;
-import estorePojo.exceptions.UnknownItemException;
+import estorePojo.exceptions.*;
+import serviceInterfaces.CartManagerInterface;
+import serviceInterfaces.PaymentInterface;
+import serviceInterfaces.QuickOrderInterface;
 
-public class Store {
+public class Store 
+		implements PaymentInterface, CartManagerInterface, QuickOrderInterface {
 
 	private Provider provider;
 	private Bank bank;
@@ -75,11 +76,7 @@ public class Store {
 	 *                                     if the given client does not own the
 	 *                                     given cart
 	 */
-	public Cart addItemToCart(
-			Cart cart,
-			Client client,
-			Object item,
-			int qty)
+	public Cart addItemToCart(Cart cart, Client client, Object item, int qty)
 			throws UnknownItemException, InvalidCartException {
 
 		if (cart == null) {
@@ -168,14 +165,8 @@ public class Store {
 	 * @throws InsufficientBalanceException
 	 * @throws UnknownAccountException
 	 */
-	public Order oneShotOrder(
-			Client client,
-			Object item,
-			int qty,
-			String address,
-			String bankAccountRef)
-			throws UnknownItemException,
-			InsufficientBalanceException, UnknownAccountException {
+	public Order oneShotOrder(Client client, Object item, int qty, String address, String bankAccountRef)
+			throws UnknownItemException, InsufficientBalanceException, UnknownAccountException {
 
 		// Create a new order
 		Order order = new Order(client, address, bankAccountRef);

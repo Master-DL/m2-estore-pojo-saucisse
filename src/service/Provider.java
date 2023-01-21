@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import estorePojo.exceptions.UnknownItemException;
+import serviceInterfaces.OrderManagerInterface;
+import serviceInterfaces.PriceCalculatorInterface;
 
-public class Provider {
+public class Provider implements OrderManagerInterface, PriceCalculatorInterface {
 
 	private Map<String, Double> itemPrices = new HashMap<>();
 

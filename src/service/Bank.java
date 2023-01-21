@@ -3,8 +3,9 @@ package service;
 import data.Account;
 import estorePojo.exceptions.InsufficientBalanceException;
 import estorePojo.exceptions.UnknownAccountException;
+import serviceInterfaces.FundTransfertInterface;
 
-public class Bank {
+public class Bank implements FundTransfertInterface {
 
   private Account estore;
   private Account anne, bob;
