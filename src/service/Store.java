@@ -9,20 +9,19 @@ import data.Cart;
 import data.ItemInStock;
 import data.Order;
 import estorePojo.exceptions.*;
-import serviceInterfaces.CartManagerInterface;
-import serviceInterfaces.PaymentInterface;
-import serviceInterfaces.QuickOrderInterface;
+import serviceInterfaces.FundTransfertInterface;
+import serviceInterfaces.ProviderInterface;
+import serviceInterfaces.StoreInterface;
 
-public class Store 
-		implements PaymentInterface, CartManagerInterface, QuickOrderInterface {
+public class Store implements StoreInterface {
 
-	private Provider provider;
-	private Bank bank;
+	private ProviderInterface provider;
+	private FundTransfertInterface bank; // Bank
 
 	/**
 	 * Constructs a new StoreImpl
 	 */
-	public Store(Provider prov, Bank bk) {
+	public Store(ProviderInterface prov, FundTransfertInterface bk) {
 		provider = prov;
 		bank = bk;
 	}
@@ -76,12 +75,12 @@ public class Store
 	 *                                     if the given client does not own the
 	 *                                     given cart
 	 */
-	public Cart addItemToCart(Cart cart, Client client, Object item, int qty)
+	public Cart addItemToCart(Cart cart, Runnable client, Object item, int qty)
 			throws UnknownItemException, InvalidCartException {
 
 		if (cart == null) {
 			// If no cart is provided, create a new one
-			cart = new Cart(client);
+			cart = new Cart((Client) client);
 		} else {
 			if (client != cart.getClient())
 				throw new InvalidCartException(
@@ -165,11 +164,11 @@ public class Store
 	 * @throws InsufficientBalanceException
 	 * @throws UnknownAccountException
 	 */
-	public Order oneShotOrder(Client client, Object item, int qty, String address, String bankAccountRef)
+	public Order oneShotOrder(Runnable client, Object item, int qty, String address, String bankAccountRef)
 			throws UnknownItemException, InsufficientBalanceException, UnknownAccountException {
 
 		// Create a new order
-		Order order = new Order(client, address, bankAccountRef);
+		Order order = new Order((Client) client, address, bankAccountRef);
 		orders.put(order.getKey(), order);
 
 		// Treat the item ordered
@@ -220,7 +219,7 @@ public class Store
 		if (iis == null) {
 			int quantity = qty + more;
 			delay += provider.order(this, item, quantity);
-			ItemInStock newItem = new ItemInStock(item, more, price, provider);
+			ItemInStock newItem = new ItemInStock(item, more, price, (Provider) provider);
 			itemsInStock.put(item, newItem);
 		} else {
 			// The item is in the stock
